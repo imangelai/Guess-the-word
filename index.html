@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+
+<body>
+
+    <div id="app">
+        <div
+            class="flex justify-center items-center h-screen bg-[url('https://cdn.dribbble.com/userupload/20763479/file/original-f857d00d913ade8cdb6edf5e792fd091.gif')] bg-cover bg-center">
+
+            <div class="flex flex-col justify-center items-center gap-5">
+
+                <h1 class="text-3xl lg:text-5xl font-sans text-lime-200 font-bold">Guess the Word</h1>
+
+                <!-- <div class="flex gap-5">
+                    <p
+                        class="text-xl font-mono cursor-pointer px-4 py-2 rounded-lg bg-emerald-100 hover:text-lg hover:font-bold hover:bg-emerald-300 hover:scale-100">
+                        HINT</p>
+                    <p
+                        class="text-xl font-mono cursor-pointer px-4 py-2 rounded-lg bg-emerald-100 hover:text-lg hover:font-bold hover:bg-emerald-300 hover:scale-100">
+                        GIVE-UP</p>
+                </div> -->
+
+                <h1 class="text-xl lg:text-2xl text-white font-semibold text-center mt-3">{{message}}</h1>
+
+
+                <div class="">
+                    <h1 class="text-4xl lg:text-7xl text-center font-bold m-10 text-white">
+                        {{displayWord.join(" ")}}
+                    </h1>
+                </div>
+
+                <div v-for="(row, rowIndex) in keyboard" :key="rowIndex" class="flex gap-1 lg:gap-3">
+                    <button v-for="letters in row" :key="letters" @click="press(letters)" 
+                    :class="['h-5 w-5 md:h-20 md:w-20 lg:h-20 lg:w-20 rounded-lg text-[12px] lg:text-xl duration-200 font-bold',
+                        usedLetters.includes(letters)
+                        ? 'bg-gray-400 text-white cursor-not-allowed opacity-50'
+                        : 'bg-blue-300 cursor-pointer hover:bg-stone-900 hover:text-white'
+
+                        ]">
+                        {{letters}}
+                    </button>
+
+                </div>
+
+                <div class="flex justify-center items-center">
+                    <button @click="restartGame"
+                        class="bg-blue-400 px-2 py-2 lg:px-5 lg:py-3 text-sm md:text-lg lg:text-lg font-mono font-semibold rounded-lg hover:bg-blue-500 hover:text-white cursor-pointer mt-7 hover:scale-105 duration-100">Restart</button>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <script>
+
+        Vue.createApp({
+            data() {
+                return {
+
+                    keyboard: [
+                        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+                        ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
+                    ],
+
+                    displayWord: ["_", "_", "_", "_", "_"],
+                    words: ["TIGER", "APPLE", "SPEED", "COLOR", "MELON"],
+                    usedLetters: [],
+                    randomValue: "",
+                    message: '',
+
+                }
+            },
+            methods: {
+                randomWords() {
+                    let random = Math.floor(Math.random() * this.words.length);
+                    let randonNgani = this.words[random];
+                    return this.words[random];
+                },
+
+                press(letter) {
+                    if (this.usedLetters.includes(letter)) return
+
+                    this.usedLetters.push(letter);
+
+                    for (let i = 0; i < this.randomValue.length; i++) {
+                        if (this.randomValue[i] === letter) {
+                            this.displayWord[i] = letter;
+                        }
+                    }
+                    this.isWinner();
+                },
+
+                isWinner() {
+                    if (this.displayWord.join("") === this.randomValue) {
+                        this.message = 'You guess the word';
+                    }
+                },
+
+                restartGame() {
+                    this.randomValue = this.randomWords()
+                    this.displayWord = ["_", "_", "_", "_", "_"];
+
+                    this.usedLetters = [];
+                    this.message = '';
+                }
+
+            },
+            mounted() {
+                this.randomValue = this.randomWords();
+
+            }
+        }).mount('#app');
+    </script>
+
+</body>
+
+</html>
